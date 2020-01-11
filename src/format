@@ -1,6 +1,0 @@
-#!/bin/bash
-
-for i in $( ls | grep cc )
-do
-    clang-format -i $i
-done

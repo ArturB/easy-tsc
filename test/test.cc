@@ -1,6 +1,6 @@
-#include "../src/tsc.cc"
-#include <iostream>
+#include "../include/easy-tsc"
 #include <cmath>
+#include <iostream>
 
 using namespace std;
 
@@ -8,7 +8,7 @@ int main( int argc, char* const argv[] )
 {
     Tsc tsc;
     tsc.start();
-    usleep(1000);
+    usleep( 1000 );
     tsc.stop();
     cout << tsc << endl;
 }

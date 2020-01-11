@@ -5,9 +5,9 @@
 class Tsc
 {
   private:
-    unsigned long long calibrate_; // Time of measuring process itself
+    unsigned long long calibrate_; // Time of TSC process itself
     unsigned long long t_;         // Temporary measure
-    unsigned long long time_;      // Min of measures made
+    unsigned long long time_;      // Minimum value of measures made
 
     static __inline__ unsigned long long rdtsc( void )
     {
@@ -31,9 +31,10 @@ class Tsc
 
   public:
     Tsc()
-        : t_(0), time_( 0 )
+        : t_( 0 )
+        , time_( 0 )
     {
-        usleep(10000);
+        usleep( 10000 );
         for( unsigned i = 0; i < 10000000; ++i ) {
             start_calibrate();
             stop_calibrate();
@@ -55,10 +56,9 @@ class Tsc
 
     friend std::ostream& operator<<( std::ostream& os, const Tsc& tt )
     {
-        if(tt.time_ == 0) {
+        if( tt.time_ == 0 ) {
             os << 0;
-        }
-        else {
+        } else {
             os << tt.time_ - tt.calibrate_;
         }
         return os;
