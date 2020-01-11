@@ -1,0 +1,51 @@
+#!/bin/bash
+
+CPU_PATH="/sys/devices/system/cpu"
+MODE=$1
+
+# Turn off CPU cores cpu1 - cpu9
+# cpu0 remains on, as it is impossible to turn it off
+if [[ $MODE == "on" ]]
+then
+    for i in $( ls -d $CPU_PATH/* | grep cpu[1-9] )
+    do
+        sudo bash -c "echo 1 > $i/online"
+        echo -e "\e[32m$i is turned on\e[0m"
+    done
+    exit 0
+fi
+
+# Turn on CPU cores cpu1 - cpu9
+if [[ $MODE == "off" ]]
+then
+    for i in $( ls -d $CPU_PATH/* | grep cpu[1-9] )
+    do
+        sudo bash -c "echo 0 > $i/online"
+        echo -e "\e[31m$i turned off\e[0m"
+    done
+    exit 0
+fi
+
+# Get state of all CPU cores
+if [[ $MODE == "get" ]]
+then
+    for i in $( ls -d $CPU_PATH/* | grep cpu[1-9] )
+    do
+        STATE=$( cat $i/online )
+        if [[ $STATE == "0" ]]
+        then
+            echo -e "\e[31m$i is turned off\e[0m"
+        elif [[ $STATE == "1" ]]
+        then
+            echo -e "\e[32m$i is turned on\e[0m"
+        else
+            echo -e "$i mode unrecognized"
+        fi
+    done
+    exit 0
+fi
+
+echo "Run ./cpu-mode off to turn off all CPU cores beyond one"
+echo "Run ./cpu-mode on to turn on all CPU cores"
+echo "Run ./cpu-mode get to check state of CPU cores"
+exit 1
