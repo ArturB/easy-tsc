@@ -1,5 +1,5 @@
-#include <easy-tsc.cpp>
 #include <cmath>
+#include <easytsc.h>
 #include <iostream>
 
 using namespace std;
