@@ -1,44 +1,46 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.15)
 
+# Project name and version
 project(easytsc VERSION 0.1.1)
+
+# Language standard
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
+
+# Include local macros
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR})
+# include(RequireLibrary)
+
+# Compiler flags
+set( CMAKE_CXX_FLAGS "-Wall " )
+
+# Debug and release build
+set( CMAKE_BUILD_TYPE "debug" ) # By default, we run debug build
+if ( CMAKE_BUILD_TYPE MATCHES "debug" )
+    string ( APPEND CMAKE_CXX_FLAGS "-g -DDEBUG " ) # Debug build compiler flags
+endif ( CMAKE_BUILD_TYPE MATCHES "debug" )
+if ( CMAKE_BUILD_TYPE MATCHES "release" )
+    string ( APPEND CMAKE_CXX_FLAGS "-DNDEBUG -O3 " ) # Release build compiler flags
+endif ( CMAKE_BUILD_TYPE MATCHES "release" )
 
 # Output dirs
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
-set(CPACK_OUTPUT_FILE_PREFIX ${CMAKE_BINARY_DIR}/dist)
 
-# Compile library
+# Compile sources
 add_subdirectory(src)
 # Compile tests
 add_subdirectory(test)
 
-# CPack Installer
-include(InstallRequiredSystemLibraries)
-set(CPACK_PACKAGE_VERSION_MAJOR "${easytsc_VERSION_MAJOR}")
-set(CPACK_PACKAGE_VERSION_MINOR "${easytsc_VERSION_MINOR}")
-include(CPack)
+# Print configuration
+message("
+-------------------------------------------------------
 
-# CMake export
-install(EXPORT easytsc-targets
-        FILE easytsc-targets.cmake
-        DESTINATION lib64/cmake/easytsc-targets
-)
-include(CMakePackageConfigHelpers)
-configure_package_config_file(${CMAKE_CURRENT_SOURCE_DIR}/Config.cmake.in
-  "${CMAKE_CURRENT_BINARY_DIR}/easytsc-config.cmake"
-  INSTALL_DESTINATION "lib64/cmake/easytsc"
-  NO_SET_AND_CHECK_MACRO
-  NO_CHECK_REQUIRED_COMPONENTS_MACRO
-  )
-write_basic_package_version_file(
-  "${CMAKE_CURRENT_BINARY_DIR}/easytsc-config-version.cmake"
-  VERSION "${easytsc_VERSION_MAJOR}.${easytsc_VERSION_MINOR}"
-  COMPATIBILITY AnyNewerVersion
-)
-install(FILES
-  ${CMAKE_CURRENT_BINARY_DIR}/easytsc-config.cmake
-  DESTINATION lib64/cmake/easytsc
-  )
+Build type:        ${CMAKE_BUILD_TYPE}
+Project generator: ${CMAKE_GENERATOR}
+Install prefix:    ${CMAKE_INSTALL_PREFIX}
+Compiler flags:
+    CXX:            ${CMAKE_CXX_COMPILER}
+    CXXFLAGS:       ${CMAKE_CXX_FLAGS}
+")
